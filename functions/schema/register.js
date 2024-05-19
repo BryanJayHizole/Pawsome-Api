@@ -1,25 +1,43 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const petRegisterSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-    },
-    age: {
-        type: Number,
-        required: true,
-    },
-    username: String,
-    password: String,
+const addressSchema = new Schema({
+    purok: String,
+    barangay: String,
+    municipality: String,
+    province: String,
 });
 
-petRegisterSchema.pre('save', function (next) {
-    const username = this.name.toLocaleLowerCase().replace(/\s/g, '');
-    const password = `${this.name}${this.age}`;
-    this.username = username;
-    this.password = password;
-    next();
+const ownerInfoSchema = new Schema({
+    lastName: { type: String, required: true },
+    firstName: { type: String, required: true },
+    middleName: String,
+    gender: String,
+    birthday: Date,
+    contactNo: String,
+    email: String,
+    address: addressSchema,
 });
 
-module.exports = petRegisterSchema;
+const petInfoSchema = new Schema({
+    petName: { type: String, required: true },
+    breed: String,
+    age: Number,
+    ownerContact: String,
+    habitat: String,
+    petDob: Date,
+    petColor: String,
+    petGender: String,
+    tag: String,
+    tagOther: String,
+    tagNo: String,
+    petWeight: String,
+    petPhoto: Buffer, // To handle pet photo uploads
+});
+
+const registerSchema = new Schema({
+    ownerInfo: ownerInfoSchema,
+    petInfo: petInfoSchema,
+});
+
+module.exports = mongoose.model('Register', registerSchema);
