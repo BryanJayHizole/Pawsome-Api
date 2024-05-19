@@ -3,7 +3,7 @@ const PetRegisterModel = require('../models/register');
 
 const router = express.Router();
 
-// GET all registers
+//GET all registers
 router.get('/', async (req, res) => {
     try {
         const registers = await PetRegisterModel.find();
@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// GET a single register
+//GET a single register
 router.get('/:id', getRegister, (req, res) => {
     res.json(res.register);
 });
@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
         // Create a new register document
         const newRegister = new PetRegisterModel({ ownerInfo, petInfo });
         await newRegister.save();
-        res.status(201).json(newRegister);
+        res.status(201).json({ message: 'Register created successfully', register: newRegister });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -40,7 +40,27 @@ router.post('/', async (req, res) => {
 // UPDATE a register
 router.patch('/:id', getRegister, async (req, res) => {
     try {
-        // Logic for updating a register
+        const { ownerInfo, petInfo } = req.body;
+        if (ownerInfo) {
+            res.register.ownerInfo = { ...res.register.ownerInfo, ...ownerInfo };
+        }
+        if (petInfo) {
+            res.register.petInfo = { ...res.register.petInfo, ...petInfo };
+        }
+        const updatedRegister = await res.register.save();
+        res.json(updatedRegister);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+router.put('/:id', getRegister, async (req, res) => {
+    try {
+        const { ownerInfo, petInfo } = req.body;
+        res.register.ownerInfo = ownerInfo || res.register.ownerInfo;
+        res.register.petInfo = petInfo || res.register.petInfo;
+        const updatedRegister = await res.register.save();
+        res.json(updatedRegister);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -49,7 +69,8 @@ router.patch('/:id', getRegister, async (req, res) => {
 // DELETE a register
 router.delete('/:id', getRegister, async (req, res) => {
     try {
-        // Logic for deleting a register
+        await res.register.remove();
+        res.json({ message: 'Register deleted' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
