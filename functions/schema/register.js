@@ -40,4 +40,4 @@ const registerSchema = new Schema({
     petInfo: petInfoSchema,
 });
 
-module.exports = mongoose.model('Register', registerSchema);
+module.exports = registerSchema;
