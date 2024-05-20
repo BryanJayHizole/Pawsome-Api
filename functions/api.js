@@ -7,7 +7,7 @@ const cors = require('cors');
 
 const app = express();
 
-//your mongoDB Cloud URL
+// your mongoDB Cloud URL
 const dbCloudUrl = 'mongodb+srv://bryanhizole:bryan142001@cluster0.ogfgkgo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 const dbLocalUrl = 'mongodb://localhost:27017/Pawsome';
 
@@ -19,6 +19,9 @@ mongoose.connect(dbCloudUrl || dbLocalUrl)
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('Failed to connect to MongoDB', error));
 
-app.use('/.netlify/functions/api', router);
+app.use('/.netlify/functions/api', (req, res, next) => {
+    console.log(`${req.method} request to ${req.url}`);
+    next();
+}, router);
 
 module.exports.handler = serverless(app);
