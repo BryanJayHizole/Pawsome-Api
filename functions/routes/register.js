@@ -5,10 +5,13 @@ const router = express.Router();
 
 //GET all registers
 router.get('/', async (req, res) => {
+    console.log("GET / request received");
     try {
         const registers = await PetRegisterModel.find();
+        console.log("Data fetched from MongoDB");
         res.json(registers);
     } catch (err) {
+        console.error("Error fetching data from MongoDB:", err);
         res.status(500).json({ message: err.message });
     }
 });
