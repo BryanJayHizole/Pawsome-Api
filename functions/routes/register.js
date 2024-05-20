@@ -1,7 +1,26 @@
 const express = require('express');
 const PetRegisterModel = require('../models/register');
-
+const multer = require('multer');
 const router = express.Router();
+
+// Configure multer for file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+// Middleware function to get a register by ID
+async function getRegister(req, res, next) {
+    try {
+        const register = await PetRegisterModel.findById(req.params.id);
+        if (!register) {
+            return res.status(404).json({ message: 'Register not found' });
+        }
+        res.register = register;
+        next();
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
 
 //GET all registers
 router.get('/', async (req, res) => {
@@ -19,17 +38,26 @@ router.get('/:id', getRegister, (req, res) => {
 });
 
 // CREATE a register
-router.post('/', async (req, res) => {
+router.post('/', upload.single('petPhoto'), async (req, res) => {
     try {
         const { ownerInfo, petInfo } = req.body;
 
+        // Parse the ownerInfo and petInfo from JSON strings
+        const parsedOwnerInfo = JSON.parse(ownerInfo);
+        const parsedPetInfo = JSON.parse(petInfo);
+
         // Validate required fields
-        if (!ownerInfo.lastName || !ownerInfo.firstName || !petInfo.petName) {
+        if (!parsedOwnerInfo.lastName || !parsedOwnerInfo.firstName || !parsedPetInfo.petName) {
             return res.status(400).json({ message: 'Owner last name, first name, and pet name are required' });
         }
 
+        // Handle the pet photo file
+        if (req.file) {
+            parsedPetInfo.petPhoto = req.file.buffer;
+        }
+
         // Create a new register document
-        const newRegister = new PetRegisterModel({ ownerInfo, petInfo });
+        const newRegister = new PetRegisterModel({ ownerInfo: parsedOwnerInfo, petInfo: parsedPetInfo });
         await newRegister.save();
         res.status(201).json({ message: 'Register created successfully', register: newRegister });
     } catch (err) {
@@ -38,14 +66,19 @@ router.post('/', async (req, res) => {
 });
 
 // UPDATE a register
-router.patch('/:id', getRegister, async (req, res) => {
+router.patch('/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
     try {
         const { ownerInfo, petInfo } = req.body;
         if (ownerInfo) {
-            res.register.ownerInfo = { ...res.register.ownerInfo, ...ownerInfo };
+            res.register.ownerInfo = { ...res.register.ownerInfo, ...JSON.parse(ownerInfo) };
         }
         if (petInfo) {
             res.register.petInfo = { ...res.register.petInfo, ...petInfo };
+            const updatedPetInfo = JSON.parse(petInfo);
+            if (req.file) {
+                updatedPetInfo.petPhoto = req.file.buffer;
+            }
+            res.register.petInfo = { ...res.register.petInfo, ...updatedPetInfo };
         }
         const updatedRegister = await res.register.save();
         res.json(updatedRegister);
@@ -54,11 +87,16 @@ router.patch('/:id', getRegister, async (req, res) => {
     }
 });
 
-router.put('/:id', getRegister, async (req, res) => {
+router.put('/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
     try {
         const { ownerInfo, petInfo } = req.body;
-        res.register.ownerInfo = ownerInfo || res.register.ownerInfo;
-        res.register.petInfo = petInfo || res.register.petInfo;
+        const updatedOwnerInfo = ownerInfo ? JSON.parse(ownerInfo) : res.register.ownerInfo;
+        const updatedPetInfo = petInfo ? JSON.parse(petInfo) : res.register.petInfo;
+        if (req.file) {
+            updatedPetInfo.petPhoto = req.file.buffer;
+        }
+        res.register.ownerInfo = updatedOwnerInfo;
+        res.register.petInfo = updatedPetInfo;
         const updatedRegister = await res.register.save();
         res.json(updatedRegister);
     } catch (err) {
@@ -76,18 +114,5 @@ router.delete('/:id', getRegister, async (req, res) => {
     }
 });
 
-// Middleware function to get a register by ID
-async function getRegister(req, res, next) {
-    try {
-        const register = await PetRegisterModel.findById(req.params.id);
-        if (!register) {
-            return res.status(404).json({ message: 'Register not found' });
-        }
-        res.register = register;
-        next();
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-}
 
 module.exports = router;
