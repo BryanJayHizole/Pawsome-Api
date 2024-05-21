@@ -46,11 +46,10 @@ reportRouter.get('/report/:id', async (req, res) => {
 });
 
 // POST: Create a new stray dog report
-reportRouter.post('/report', upload.single('photo'), async (req, res) => {
+reportRouter.post('/report', upload.none(), async (req, res) => {
     try {
         const { location, description } = req.body;
-        const photo = req.file ? req.file.buffer : null;
-        const newReport = new ReportStrayModel({ location, description, photo });
+        const newReport = new ReportStrayModel({ location, description });
         await newReport.save();
         res.status(201).json({ message: 'Stray dog report created successfully', report: newReport });
     } catch (err) {
