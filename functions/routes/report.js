@@ -1,5 +1,5 @@
 const express = require('express');
-const PetRegisterModel = require('../models/register');
+const ReportStrayModel = require('../models/report');
 const multer = require('multer');
 const router = express.Router();
 
@@ -7,14 +7,14 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Middleware function to get a register by ID
-async function getRegister(req, res, next) {
+// Middleware function to get a report by ID
+async function getReport(req, res, next) {
     try {
-        const register = await PetRegisterModel.findById(req.params.id);
-        if (!register) {
-            return res.status(404).json({ message: 'Register not found' });
+        const report = await ReportStrayModel.findById(req.params.id);
+        if (!report) {
+            return res.status(404).json({ message: 'Report not found' });
         }
-        res.register = register;
+        res.report = report;
         next();
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -23,50 +23,43 @@ async function getRegister(req, res, next) {
 
 
 //GET all registers
-router.get('/register', async (req, res) => {
+router.get('/report', async (req, res) => {
     try {
-        const registers = await PetRegisterModel.find();
-        res.json(registers);
+        const reports = await ReportStrayModelModel.find();
+        res.json(reports);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
-//GET a single register
-router.get('/register/:id', getRegister, (req, res) => {
-    res.json(res.register);
+// GET: Get a single stray dog report by ID
+router.get('/report/:id', async (req, res) => {
+    try {
+        const report = await ReportStrayModel.findById(req.params.id);
+        if (!report) {
+            return res.status(404).json({ message: 'Stray dog report not found' });
+        }
+        res.json(report);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 });
 
-// CREATE a register
-router.post('/register', upload.single('petPhoto'), async (req, res) => {
+// POST: Create a new stray dog report
+router.post('/report', upload.single('photo'), async (req, res) => {
     try {
-        const { ownerInfo, petInfo } = req.body;
-
-        // Parse the ownerInfo and petInfo from JSON strings
-        const parsedOwnerInfo = JSON.parse(ownerInfo);
-        const parsedPetInfo = JSON.parse(petInfo);
-
-        // Validate required fields
-        if (!parsedOwnerInfo.lastName || !parsedOwnerInfo.firstName || !parsedPetInfo.petName) {
-            return res.status(400).json({ message: 'Owner last name, first name, and pet name are required' });
-        }
-
-        // Handle the pet photo file
-        if (req.file) {
-            parsedPetInfo.petPhoto = req.file.buffer;
-        }
-
-        // Create a new register document
-        const newRegister = new PetRegisterModel({ ownerInfo: parsedOwnerInfo, petInfo: parsedPetInfo });
-        await newRegister.save();
-        res.status(201).json({ message: 'Register created successfully', register: newRegister });
+        const { location, description } = req.body;
+        const photo = req.file ? req.file.buffer : null;
+        const newReport = new ReportStrayModel({ location, description, photo });
+        await newReport.save();
+        res.status(201).json({ message: 'Stray dog report created successfully', report: newReport });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 });
 
 // UPDATE a register
-router.patch('/register/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
+router.patch('/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
     try {
         const { ownerInfo, petInfo } = req.body;
         if (ownerInfo) {
@@ -87,7 +80,7 @@ router.patch('/register/:id', getRegister, upload.single('petPhoto'), async (req
     }
 });
 
-router.put('/register/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
+router.put('/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
     try {
         const { ownerInfo, petInfo } = req.body;
         const updatedOwnerInfo = ownerInfo ? JSON.parse(ownerInfo) : res.register.ownerInfo;
@@ -104,11 +97,15 @@ router.put('/register/:id', getRegister, upload.single('petPhoto'), async (req, 
     }
 });
 
-// DELETE a register
-router.delete('/register/:id', getRegister, async (req, res) => {
+// DELETE: Delete a stray dog report by ID
+router.delete('/report/:id', async (req, res) => {
     try {
-        await res.register.remove();
-        res.json({ message: 'Register deleted' });
+        const report = await ReportStrayModel.findById(req.params.id);
+        if (!report) {
+            return res.status(404).json({ message: 'Stray dog report not found' });
+        }
+        await report.remove();
+        res.json({ message: 'Stray dog report deleted' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
