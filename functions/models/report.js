@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const registerSchema = require('../schema/register'); // Ensure this path is correct
+const reportSchema = require('../schema/report'); // Ensure this path is correct
 
-const PetRegisterModel = mongoose.model('Register', registerSchema);
+const ReportStrayModel = mongoose.model('Report', reportSchema);
 
-module.exports = PetRegisterModel;
+module.exports = ReportStrayModel;
