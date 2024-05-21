@@ -1,7 +1,7 @@
 const express = require('express');
 const ReportStrayModel = require('../models/report');
 const multer = require('multer');
-const router = express.Router();
+const reportRouter = express.Router();
 
 // Configure multer for file uploads
 const storage = multer.memoryStorage();
@@ -112,4 +112,4 @@ router.delete('/report/:id', async (req, res) => {
 });
 
 
-module.exports = router;
+module.exports = reportRouter;

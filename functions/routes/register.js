@@ -1,7 +1,7 @@
 const express = require('express');
 const PetRegisterModel = require('../models/register');
 const multer = require('multer');
-const router = express.Router();
+const registerRouter = express.Router();
 
 // Configure multer for file uploads
 const storage = multer.memoryStorage();
@@ -115,4 +115,4 @@ router.delete('/register/:id', getRegister, async (req, res) => {
 });
 
 
-module.exports = router;
+module.exports = registerRouter;
