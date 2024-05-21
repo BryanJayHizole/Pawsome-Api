@@ -3,6 +3,7 @@ const express = require('express');
 const serverless = require('serverless-http');
 const registerRouter = require('./routes/register'); // Renamed from 'router'
 const reportRouter = require('./routes/report'); // Renamed from 'router'
+const lostPetRouter = require('./routes/lostPet'); // Renamed from 'router'
 const mongoose = require('mongoose');
 const cors = require('cors');
 
@@ -22,5 +23,6 @@ mongoose.connect(dbCloudUrl || dbLocalUrl)
 
 app.use('/.netlify/functions/api/', registerRouter); // Register router
 app.use('/.netlify/functions/api/', reportRouter); // Report router
+app.use('/.netlify/functions/api/', lostPetRouter); // Report router
 
 module.exports.handler = serverless(app);
