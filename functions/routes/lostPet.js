@@ -40,7 +40,7 @@ lostPetRouter.get('/lost-pet/:id', getLostPet, (req, res) => {
 lostPetRouter.post('/lost-pet', upload.none(), async (req, res) => {
     try {
         const { petName, barangay, purok, dogGender, dogColor, dogBreed, dogTag, tagOther, contactInfo, description } = req.body;
-        const newLostPet = new LostPet({ petName, barangay, purok, dogGender, dogColor, dogBreed, dogTag, tagOther, contactInfo, description });
+        const newLostPet = new LostPetModel({ petName, barangay, purok, dogGender, dogColor, dogBreed, dogTag, tagOther, contactInfo, description });
         await newLostPet.save();
         res.status(201).json({ message: 'Lost pet report created successfully', lostPet: newLostPet });
     } catch (err) {
