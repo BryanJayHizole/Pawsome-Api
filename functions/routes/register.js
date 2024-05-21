@@ -23,7 +23,7 @@ async function getRegister(req, res, next) {
 
 
 //GET all registers
-router.get('/register', async (req, res) => {
+rregisterRouter.get('/register', async (req, res) => {
     try {
         const registers = await PetRegisterModel.find();
         res.json(registers);
@@ -33,12 +33,12 @@ router.get('/register', async (req, res) => {
 });
 
 //GET a single register
-router.get('/register/:id', getRegister, (req, res) => {
+registerRouter.get('/register/:id', getRegister, (req, res) => {
     res.json(res.register);
 });
 
 // CREATE a register
-router.post('/register', upload.single('petPhoto'), async (req, res) => {
+registerRouter.post('/register', upload.single('petPhoto'), async (req, res) => {
     try {
         const { ownerInfo, petInfo } = req.body;
 
@@ -66,7 +66,7 @@ router.post('/register', upload.single('petPhoto'), async (req, res) => {
 });
 
 // UPDATE a register
-router.patch('/register/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
+registerRouter.patch('/register/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
     try {
         const { ownerInfo, petInfo } = req.body;
         if (ownerInfo) {
@@ -87,7 +87,7 @@ router.patch('/register/:id', getRegister, upload.single('petPhoto'), async (req
     }
 });
 
-router.put('/register/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
+registerRouter.put('/register/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
     try {
         const { ownerInfo, petInfo } = req.body;
         const updatedOwnerInfo = ownerInfo ? JSON.parse(ownerInfo) : res.register.ownerInfo;
@@ -105,7 +105,7 @@ router.put('/register/:id', getRegister, upload.single('petPhoto'), async (req, 
 });
 
 // DELETE a register
-router.delete('/register/:id', getRegister, async (req, res) => {
+registerRouter.delete('/register/:id', getRegister, async (req, res) => {
     try {
         await res.register.remove();
         res.json({ message: 'Register deleted' });

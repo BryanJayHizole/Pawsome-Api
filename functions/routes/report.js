@@ -23,7 +23,7 @@ async function getReport(req, res, next) {
 
 
 //GET all registers
-router.get('/report', async (req, res) => {
+reportRouter.get('/report', async (req, res) => {
     try {
         const reports = await ReportStrayModelModel.find();
         res.json(reports);
@@ -33,7 +33,7 @@ router.get('/report', async (req, res) => {
 });
 
 // GET: Get a single stray dog report by ID
-router.get('/report/:id', async (req, res) => {
+reportRouter.get('/report/:id', async (req, res) => {
     try {
         const report = await ReportStrayModel.findById(req.params.id);
         if (!report) {
@@ -46,7 +46,7 @@ router.get('/report/:id', async (req, res) => {
 });
 
 // POST: Create a new stray dog report
-router.post('/report', upload.single('photo'), async (req, res) => {
+reportRouter.post('/report', upload.single('photo'), async (req, res) => {
     try {
         const { location, description } = req.body;
         const photo = req.file ? req.file.buffer : null;
@@ -59,7 +59,7 @@ router.post('/report', upload.single('photo'), async (req, res) => {
 });
 
 // UPDATE a register
-router.patch('/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
+reportRouter.patch('/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
     try {
         const { ownerInfo, petInfo } = req.body;
         if (ownerInfo) {
@@ -80,7 +80,7 @@ router.patch('/:id', getRegister, upload.single('petPhoto'), async (req, res) =>
     }
 });
 
-router.put('/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
+reportRouter.put('/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
     try {
         const { ownerInfo, petInfo } = req.body;
         const updatedOwnerInfo = ownerInfo ? JSON.parse(ownerInfo) : res.register.ownerInfo;
@@ -98,7 +98,7 @@ router.put('/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
 });
 
 // DELETE: Delete a stray dog report by ID
-router.delete('/report/:id', async (req, res) => {
+reportRouter.delete('/report/:id', async (req, res) => {
     try {
         const report = await ReportStrayModel.findById(req.params.id);
         if (!report) {
