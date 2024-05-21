@@ -59,7 +59,7 @@ reportRouter.post('/report', upload.single('photo'), async (req, res) => {
 });
 
 // UPDATE a register
-reportRouter.patch('/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
+reportRouter.patch('/:id', getReport, upload.single('petPhoto'), async (req, res) => {
     try {
         const { ownerInfo, petInfo } = req.body;
         if (ownerInfo) {
@@ -80,7 +80,7 @@ reportRouter.patch('/:id', getRegister, upload.single('petPhoto'), async (req, r
     }
 });
 
-reportRouter.put('/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
+reportRouter.put('/:id', getReport, upload.single('petPhoto'), async (req, res) => {
     try {
         const { ownerInfo, petInfo } = req.body;
         const updatedOwnerInfo = ownerInfo ? JSON.parse(ownerInfo) : res.register.ownerInfo;
