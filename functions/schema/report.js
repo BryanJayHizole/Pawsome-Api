@@ -2,9 +2,26 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const reportSchema = new Schema({
-    location: { type: String, required: true },
-    description: { type: String, required: true },
-    timestamp: { type: Date, default: Date.now }
+    barangay: {
+        type: String,
+        required: true
+    },
+    purok: String,
+    dogGender: {
+        type: String,
+        enum: ['male', 'female'] // Dog gender can be either 'male' or 'female'
+    },
+    dogColor: String,
+    dogBreed: String,
+    dogTag: String,
+    description: {
+        type: String,
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 });
 
 module.exports = reportSchema;
