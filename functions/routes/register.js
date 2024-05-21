@@ -23,7 +23,7 @@ async function getRegister(req, res, next) {
 
 
 //GET all registers
-rregisterRouter.get('/register', async (req, res) => {
+registerRouter.get('/register', async (req, res) => {
     try {
         const registers = await PetRegisterModel.find();
         res.json(registers);
