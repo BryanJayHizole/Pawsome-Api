@@ -10,7 +10,7 @@ const upload = multer({ storage: storage });
 // Middleware function to get a lost pet report by ID
 async function getLostPet(req, res, next) {
     try {
-        const lostPet = await LostPet.findById(req.params.id);
+        const lostPet = await LostPetModel.findById(req.params.id);
         if (!lostPet) {
             return res.status(404).json({ message: 'Lost pet report not found' });
         }
@@ -24,7 +24,7 @@ async function getLostPet(req, res, next) {
 // GET: Get all lost pet reports
 lostPetRouter.get('/lost-pet', async (req, res) => {
     try {
-        const lostPets = await LostPet.find();
+        const lostPets = await LostPetModel.find();
         res.json(lostPets);
     } catch (err) {
         res.status(500).json({ message: err.message });
