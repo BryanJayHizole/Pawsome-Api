@@ -25,7 +25,7 @@ async function getReport(req, res, next) {
 //GET all registers
 reportRouter.get('/report', async (req, res) => {
     try {
-        const reports = await ReportStrayModelModel.find();
+        const reports = await ReportStrayModel.find();
         res.json(reports);
     } catch (err) {
         res.status(500).json({ message: err.message });
