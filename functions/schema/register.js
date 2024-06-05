@@ -32,7 +32,13 @@ const petInfoSchema = new Schema({
     tagOther: String,
     tagNo: String,
     petWeight: String,
-    petPhoto: Buffer
+    petPhoto: Buffer,
+    vaccinationDate: Date,
+    vaccinatedBy: String,
+    VaccineStockNo: String,
+    vaccineSource: String,
+    vaccineType: String,
+    vaccineTypeOther: String,
 });
 
 const registerSchema = new Schema({
