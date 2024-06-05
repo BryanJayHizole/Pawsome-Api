@@ -53,8 +53,16 @@ registerRouter.post('/register', upload.single('petPhoto'), async (req, res) => 
         }
 
         // Handle the pet photo file
+        let petPhotoUrl = '';
         if (req.file) {
-            parsedPetInfo.petPhoto = req.file.buffer;
+            // Save the photo to storage and get the URL or base64 data
+            // Example: Saving to a file system
+            // const petPhotoPath = '/path/to/save/photo/' + req.file.originalname;
+            // req.file.buffer.pipe(fs.createWriteStream(petPhotoPath));
+            // petPhotoUrl = 'http://example.com/' + petPhotoPath;
+            
+            // For demo purposes, returning base64 data
+            petPhotoUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
         }
 
         // Create a new register document

@@ -32,7 +32,7 @@ const petInfoSchema = new Schema({
     tagOther: String,
     tagNo: String,
     petWeight: String,
-    petPhoto: Buffer, // To handle pet photo uploads
+    petPhoto: String, // To handle pet photo uploads
 });
 
 const registerSchema = new Schema({
