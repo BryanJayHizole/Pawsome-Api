@@ -45,7 +45,7 @@ registerRouter.post('/register', upload.single('petPhoto'), async (req, res) => 
 
         // Parse the ownerInfo and petInfo from JSON strings
         const parsedOwnerInfo = JSON.parse(ownerInfo);
-        const parsedPetInfo = JSON.parse(petInfo);
+        let parsedPetInfo = JSON.parse(petInfo);
 
         // Validate required fields
         if (!parsedOwnerInfo.lastName || !parsedOwnerInfo.firstName || !parsedPetInfo.petName) {
@@ -53,19 +53,14 @@ registerRouter.post('/register', upload.single('petPhoto'), async (req, res) => 
         }
 
         // Handle the pet photo file
-        let petPhotoUrl = '';
+        let petPhoto = null;
         if (req.file) {
-            // Decode the base64 string to binary data
-            const binaryData = Buffer.from(req.file.buffer, 'base64');
-            // Save the photo to storage and get the URL or base64 data
-            // Example: Saving to a file system
-            // const petPhotoPath = '/path/to/save/photo/' + req.file.originalname;
-            // req.file.buffer.pipe(fs.createWriteStream(petPhotoPath));
-            // petPhotoUrl = 'http://example.com/' + petPhotoPath;
-            
-            // For demo purposes, returning base64 data
-            petPhotoUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+            petPhoto = req.file.buffer;
         }
+
+        // Update petInfo to include petPhoto
+        parsedPetInfo = { ...parsedPetInfo, petPhoto };
+
 
         // Create a new register document
         const newRegister = new PetRegisterModel({ ownerInfo: parsedOwnerInfo, petInfo: parsedPetInfo });
