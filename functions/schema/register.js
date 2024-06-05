@@ -32,7 +32,7 @@ const petInfoSchema = new Schema({
     tagOther: String,
     tagNo: String,
     petWeight: String,
-    petPhoto: Binary
+    petPhoto: Buffer
 });
 
 const registerSchema = new Schema({
