@@ -55,6 +55,8 @@ registerRouter.post('/register', upload.single('petPhoto'), async (req, res) => 
         // Handle the pet photo file
         let petPhotoUrl = '';
         if (req.file) {
+            // Decode the base64 string to binary data
+            const binaryData = Buffer.from(req.file.buffer, 'base64');
             // Save the photo to storage and get the URL or base64 data
             // Example: Saving to a file system
             // const petPhotoPath = '/path/to/save/photo/' + req.file.originalname;
