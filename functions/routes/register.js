@@ -33,7 +33,7 @@ registerRouter.get('/register', async (req, res) => {
 });
 
 //GET a single register
-registerRouter.get('/register/:id', getRegister, (req, res) => {
+registerRouter.get('/register/664c27bd072da30f2887dd18', getRegister, (req, res) => {
     res.json(res.register);
 });
 
