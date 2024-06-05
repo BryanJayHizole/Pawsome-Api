@@ -35,7 +35,7 @@ const petInfoSchema = new Schema({
     petPhoto: Buffer,
     vaccinationDate: Date,
     vaccinatedBy: String,
-    VaccineStockNo: String,
+    vaccineStockNo: String,
     vaccineSource: String,
     vaccineType: String,
     vaccineTypeOther: String,
