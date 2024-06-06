@@ -79,12 +79,10 @@ registerRouter.patch('/register/:id', getRegister, upload.single('petPhoto'), as
             res.register.ownerInfo = { ...res.register.ownerInfo, ...JSON.parse(ownerInfo) };
         }
         if (petInfo) {
-            res.register.petInfo = { ...res.register.petInfo, ...petInfo };
-            const updatedPetInfo = JSON.parse(petInfo);
+            res.register.petInfo = { ...res.register.petInfo, ...JSON.parse(petInfo) };
             if (req.file) {
-                updatedPetInfo.petPhoto = req.file.buffer;
+                res.register.petInfo.petPhoto = req.file.buffer;
             }
-            res.register.petInfo = { ...res.register.petInfo, ...updatedPetInfo };
         }
         const updatedRegister = await res.register.save();
         res.json(updatedRegister);
@@ -93,6 +91,7 @@ registerRouter.patch('/register/:id', getRegister, upload.single('petPhoto'), as
     }
 });
 
+// PUT route for updating a register
 registerRouter.put('/register/:id', getRegister, upload.single('petPhoto'), async (req, res) => {
     try {
         const { ownerInfo, petInfo } = req.body;
